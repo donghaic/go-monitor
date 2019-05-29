@@ -1,0 +1,48 @@
+port: 8081
+
+kafka:
+  server:
+    clientId: impclk-producer
+    brokers: kafka:9092
+
+  topic:
+    imp: gt_imp_report
+    click: gt_clk_report
+    conv: gt_event_report
+
+redis:
+  entity:
+    address: localhost:6379
+    password:
+    db: 1
+    maxIdle: 10
+    maxActive: 1000
+    idleTimeout: 1000
+
+  pubsub:
+    address: localhost:6379
+    password:
+    db: 1
+    maxIdle: 2
+    maxActive: 10
+    idleTimeout: 1000
+
+mongodb:
+  log:
+    addr: mongodb://localhost:27017
+    user:
+    password:
+    dbname: gt_log
+
+  report:
+    addr: mongodb://localhost:27017
+    user:
+    password:
+    dbname: gt_report
+
+httpcli:
+  timeout: 10000
+  maxIdleConns: 100
+  maxIdleConnsPerHost: 50
+
+taskQueueDataDir: ./logs
