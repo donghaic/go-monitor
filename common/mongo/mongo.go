@@ -18,6 +18,11 @@ func NewMgoPool(options *DBOption) (*MongoPool, error) {
 	s := mango.NewSession()
 	zap.Get().Info("ping mongo")
 	err := s.Ping()
+	go func() {
+		for range time.Tick(time.Second * 1) {
+			mango.ConnectionCheck()
+		}
+	}()
 	return mango, err
 }
 
@@ -33,4 +38,15 @@ func (m *MongoPool) NewSession() *mgo.Session {
 		m.session = session
 	}
 	return m.session.Clone()
+}
+
+// ConnectionCheck implements db reconnection
+func (m *MongoPool) ConnectionCheck() {
+	if err := m.session.Ping(); err != nil {
+		zap.Get().Error("Lost connection to db!", err.Error())
+		m.session.Refresh()
+		if err := m.session.Ping(); err == nil {
+			zap.Get().Error("Reconnect to db successful.")
+		}
+	}
 }
